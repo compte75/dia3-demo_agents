@@ -22,23 +22,36 @@ class UserInterface:
 			with st.chat_message(message["role"]):
 				st.markdown(message["content"])
 
+	def audio_discussion (self):
+		
+		audio_value = st.audio_input("Record a voice message")
+		
+		if audio_value:
+			st.audio(audio_value)
+			transcribed_text = self.conversation_agent_object.transcribe_audio(audio_value)
 
+			if transcribed_text:
+				self.conversation_agent_object.ask_llm(transcribed_text)
+				self.show_discussion_history()
+	
 	def run(self):
 		text_interaction = st.chat_input(
 			"Que veux tu moussaillon ?",
 			accept_file=False,
-			accept_audio=False
+			accept_audio=False,
 			)
 
 		if text_interaction :
 			self.conversation_agent_object.ask_llm(text_interaction)
 			self.show_discussion_history()
 
+	
 
 
 if __name__ == "__main__":
 	user_interface_object = UserInterface()
 	user_interface_object.run()
+	user_interface_object.audio_discussion()
 
 
 
